@@ -1,109 +1,101 @@
-/* app/globals.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-}
-
-.dashboard-shell {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 2rem 1.5rem;
-}
-
-.card {
-  border-radius: 0.75rem;
-  border: 1px solid rgba(148, 163, 184, 0.35);
-  background: radial-gradient(circle at top left, #1f2937 0, #020617 55%);
-  padding: 1.5rem;
-}
-
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
-.card-title {
-  font-size: 1.1rem;
-  font-weight: 600;
-}
-
-.input-label {
-  font-size: 0.8rem;
-  color: #cbd5f5;
-  margin-bottom: 0.25rem;
-}
-
+/* إضاءة بنفسجية نيون للخانات */
 .input {
   width: 100%;
   border-radius: 0.5rem;
-  border: 1px solid #334155;
-  background-color: #020617;
-  padding: 0.5rem 0.75rem;
-  font-size: 0.85rem;
-  color: #e5e7eb;
+  border: 1px solid #4c1d95; /* بنفسجي داكن */
+  background-color: #0a0a0a;
+  padding: 0.6rem 0.75rem;
+  font-size: 0.9rem;
+  color: #ffffff;
+  transition: 0.25s ease;
+}
+
+.input:hover {
+  border-color: #a855f7; /* بنفسجي نيون */
+  box-shadow: 0 0 10px #a855f7;
 }
 
 .input:focus {
-  outline: 1px solid #facc15;
-  border-color: #facc15;
+  outline: none;
+  border-color: #c084fc; /* بنفسجي نيون قوي */
+  box-shadow: 0 0 15px #c084fc;
 }
 
-.btn {
-  border-radius: 0.5rem;
-  padding: 0.55rem 0.9rem;
-  font-size: 0.85rem;
-  font-weight: 500;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.35rem;
-}
-
-.btn-primary {
-  background: linear-gradient(to right, #facc15, #f97316);
-  color: #111827;
-}
-
-.btn-secondary {
-  background: #0f172a;
-  color: #e5e7eb;
-  border: 1px solid #334155;
-}
-
-.btn-danger {
-  background: #ef4444;
-  color: #f9fafb;
-}
-
-.badge {
-  display: inline-flex;
-  align-items: center;
-  border-radius: 999px;
-  padding: 0.15rem 0.6rem;
-  font-size: 0.7rem;
-  border: 1px solid #334155;
-  background-color: #020617;
-}
-
-.grid-2 {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1rem;
-}
-
-.grid-3 {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1rem;
-}
-
-.section-title {
-  font-size: 0.9rem;
+/* أزرار CALL / PUT */
+.btn-call {
+  background: #00ff80; /* أخضر نيون */
+  color: #000;
   font-weight: 600;
-  margin-bottom: 0.5rem;
+  border-radius: 0.5rem;
+  padding: 0.6rem 1rem;
+  transition: 0.25s ease;
+}
+
+.btn-call:hover,
+.btn-call.active {
+  box-shadow: 0 0 15px #00ff80;
+}
+
+.btn-put {
+  background: #ff0033; /* أحمر نيون */
+  color: #fff;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  padding: 0.6rem 1rem;
+  transition: 0.25s ease;
+}
+
+.btn-put:hover,
+.btn-put.active {
+  box-shadow: 0 0 15px #ff0033;
+}
+
+/* زر تشغيل/إيقاف البوت */
+.btn-start {
+  background: #00ff80;
+  color: #000;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  padding: 0.6rem 1rem;
+  transition: 0.25s ease;
+}
+
+.btn-start:hover {
+  box-shadow: 0 0 15px #00ff80;
+}
+
+.btn-stop {
+  background: #ff0033;
+  color: #fff;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  padding: 0.6rem 1rem;
+  transition: 0.25s ease;
+}
+
+.btn-stop:hover {
+  box-shadow: 0 0 15px #ff0033;
+}
+
+/* خلفية الداشبورد */
+body {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+/* الكروت */
+.card {
+  background: #0f0f0f;
+  border: 1px solid #2d2d2d;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  transition: 0.25s ease;
+}
+
+.card:hover {
+  box-shadow: 0 0 20px #a855f7;
 }
