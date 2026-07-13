@@ -1,4 +1,3 @@
-// app/dashboard/page.tsx
 "use client";
 
 import { useState } from "react";
@@ -101,7 +100,6 @@ export default function DashboardPage() {
   };
 
   const handleSubmit = () => {
-    // هنا تربط مع الباك أو البوت لاحقًا
     console.log("Submitting contract:", contract);
     alert("Contract submitted (placeholder).");
   };
@@ -152,7 +150,7 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      {/* لوحة التحكم الرئيسية */}
+      {/* لوحة التحكم */}
       <section className="card mb-4">
         <div className="card-header">
           <span className="card-title">{t.panel}</span>
