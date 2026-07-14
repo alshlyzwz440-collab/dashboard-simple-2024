@@ -1,101 +1,259 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* اتجاه الصفحة حسب اللغة */
+.direction-rtl {
+  direction: rtl;
+  text-align: right;
+}
 
-/* إضاءة بنفسجية نيون للخانات */
-.input {
+.direction-ltr {
+  direction: ltr;
+  text-align: left;
+}
+
+/* بلوك الحقول */
+.field-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field-label {
+  font-size: 0.85rem;
+  color: #d1d5db;
+}
+
+/* الخانات مع إضاءة بنفسجية */
+.input-purple {
   width: 100%;
-  border-radius: 0.5rem;
-  border: 1px solid #4c1d95; /* بنفسجي داكن */
-  background-color: #0a0a0a;
-  padding: 0.6rem 0.75rem;
+  padding: 10px 12px;
+  background: #3a3a3d;
+  border: 2px solid #4b4b4e;
+  border-radius: 10px;
+  color: #f9fafb;
   font-size: 0.9rem;
-  color: #ffffff;
-  transition: 0.25s ease;
+  transition: 0.25s;
 }
 
-.input:hover {
-  border-color: #a855f7; /* بنفسجي نيون */
-  box-shadow: 0 0 10px #a855f7;
+.input-purple::placeholder {
+  color: #9ca3af;
 }
 
-.input:focus {
+/* الإضاءة البنفسجية عند الماوس */
+.input-purple:hover {
+  border-color: #a970ff;
+  box-shadow: 0 0 10px #a970ff;
+}
+
+.input-purple:focus {
+  border-color: #c08cff;
+  box-shadow: 0 0 12px #c08cff;
   outline: none;
-  border-color: #c084fc; /* بنفسجي نيون قوي */
-  box-shadow: 0 0 15px #c084fc;
 }
 
-/* أزرار CALL / PUT */
+/* زر اللغة */
+.lang-btn {
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid #4b4b4e;
+  background: #3a3a3d;
+  color: #e5e7eb;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.lang-btn:hover {
+  border-color: #a970ff;
+  box-shadow: 0 0 8px #a970ff;
+}
+
+.lang-btn-active {
+  background: #a970ff;
+  border-color: #c08cff;
+  color: white;
+}
+
+/* زر CALL */
 .btn-call {
-  background: #00ff80; /* أخضر نيون */
-  color: #000;
-  font-weight: 600;
-  border-radius: 0.5rem;
-  padding: 0.6rem 1rem;
-  transition: 0.25s ease;
+  flex: 1;
+  padding: 10px;
+  background: #1f8b4c;
+  color: white;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: 0.25s;
+  border: 2px solid transparent;
 }
 
-.btn-call:hover,
-.btn-call.active {
-  box-shadow: 0 0 15px #00ff80;
+.btn-call:hover {
+  background: #27a85c;
+  box-shadow: 0 0 10px #27a85c;
 }
 
+/* زر PUT */
 .btn-put {
-  background: #ff0033; /* أحمر نيون */
-  color: #fff;
-  font-weight: 600;
-  border-radius: 0.5rem;
-  padding: 0.6rem 1rem;
-  transition: 0.25s ease;
+  flex: 1;
+  padding: 10px;
+  background: #b83232;
+  color: white;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: 0.25s;
+  border: 2px solid transparent;
 }
 
-.btn-put:hover,
-.btn-put.active {
-  box-shadow: 0 0 15px #ff0033;
+.btn-put:hover {
+  background: #d93f3f;
+  box-shadow: 0 0 10px #d93f3f;
 }
 
-/* زر تشغيل/إيقاف البوت */
+/* تمييز الزر المختار */
+.btn-selected {
+  border-color: #fbbf24;
+  box-shadow: 0 0 10px #fbbf24;
+}
+
+/* زر تشغيل البوت */
 .btn-start {
-  background: #00ff80;
-  color: #000;
-  font-weight: 600;
-  border-radius: 0.5rem;
-  padding: 0.6rem 1rem;
-  transition: 0.25s ease;
+  flex: 1;
+  padding: 12px;
+  background: #1f8b4c;
+  color: white;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: 0.25s;
+  border: 2px solid transparent;
 }
 
 .btn-start:hover {
-  box-shadow: 0 0 15px #00ff80;
+  background: #27a85c;
+  box-shadow: 0 0 10px #27a85c;
 }
 
+/* زر إيقاف البوت */
 .btn-stop {
-  background: #ff0033;
-  color: #fff;
-  font-weight: 600;
-  border-radius: 0.5rem;
-  padding: 0.6rem 1rem;
-  transition: 0.25s ease;
+  flex: 1;
+  padding: 12px;
+  background: #b83232;
+  color: white;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: 0.25s;
+  border: 2px solid transparent;
 }
 
 .btn-stop:hover {
-  box-shadow: 0 0 15px #ff0033;
+  background: #d93f3f;
+  box-shadow: 0 0 10px #d93f3f;
 }
 
-/* خلفية الداشبورد */
-body {
-  background-color: #000000;
-  color: #ffffff;
+/* زر إضافة شركة */
+.btn-add-company {
+  padding: 10px 12px;
+  background: #a970ff;
+  color: white;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  border: none;
+  transition: 0.25s;
 }
 
-/* الكروت */
-.card {
-  background: #0f0f0f;
-  border: 1px solid #2d2d2d;
-  border-radius: 0.75rem;
-  padding: 1.5rem;
-  transition: 0.25s ease;
+.btn-add-company:hover {
+  background: #c08cff;
+  box-shadow: 0 0 10px #c08cff;
 }
 
-.card:hover {
-  box-shadow: 0 0 20px #a855f7;
+/* قائمة الشركات */
+.company-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.company-pill {
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #3a3a3d;
+  color: #e5e7eb;
+  font-size: 0.75rem;
+  border: 1px solid #4b4b4e;
+}
+
+/* بطاقة العقد */
+.contract-card {
+  background: #1f2933;
+  border-radius: 12px;
+  padding: 10px 12px;
+  border: 1px solid #4b4b4e;
+  color: #e5e7eb;
+  font-size: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* رأس العقد */
+.contract-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.contract-title {
+  font-weight: 600;
+  color: #f9fafb;
+}
+
+.contract-side-call {
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #1f8b4c;
+  color: white;
+  font-size: 0.75rem;
+}
+
+.contract-side-put {
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #b83232;
+  color: white;
+  font-size: 0.75rem;
+}
+
+/* صفوف العقد */
+.contract-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 0.8rem;
+}
+
+.contract-row span:first-child {
+  color: #9ca3af;
+}
+
+.contract-row span:last-child {
+  color: #e5e7eb;
+}
+
+/* ملاحظات العقد */
+.contract-notes {
+  margin-top: 6px;
+  border-top: 1px solid #4b4b4e;
+  padding-top: 6px;
+  font-size: 0.8rem;
+}
+
+.contract-notes span {
+  color: #9ca3af;
+}
+
+.contract-notes p {
+  color: #e5e7eb;
+  margin-top: 2px;
 }
