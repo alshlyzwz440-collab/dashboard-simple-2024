@@ -5,11 +5,12 @@
 import { useState, useEffect } from "react";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import ar from "date-fns/locale/ar";
-import en from "date-fns/locale/en-US";
+
+// إصلاح خطأ date-fns
+import { ar, enUS } from "date-fns/locale";
 
 registerLocale("ar", ar);
-registerLocale("en", en);
+registerLocale("en", enUS);
 
 export default function DashboardPage() {
   const [lang, setLang] = useState("ar");
