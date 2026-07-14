@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-// إصلاح خطأ date-fns
+// الاستيراد الصحيح 100٪
 import { ar, enUS } from "date-fns/locale";
 
 registerLocale("ar", ar);
@@ -15,7 +15,6 @@ registerLocale("en", enUS);
 export default function DashboardPage() {
   const [lang, setLang] = useState("ar");
 
-  // العقد
   const [symbol, setSymbol] = useState("SPX");
   const [companyInput, setCompanyInput] = useState("");
   const [companies, setCompanies] = useState<string[]>([]);
@@ -32,18 +31,14 @@ export default function DashboardPage() {
   const [stopLoss, setStopLoss] = useState("");
   const [notes, setNotes] = useState("");
 
-  // القروبات
-  const [groups, setGroups] = useState(["SPX TRADING", "QQQ GROUP", "TSLA GROUP"]);
+  const [groups] = useState(["SPX TRADING", "QQQ GROUP", "TSLA GROUP"]);
   const [selectedGroup, setSelectedGroup] = useState("SPX TRADING");
 
-  // الصفقات
   const [activeTrades, setActiveTrades] = useState<any[]>([]);
   const [closedTrades, setClosedTrades] = useState<any[]>([]);
 
-  // رفع صورة
   const [imageFile, setImageFile] = useState<File | null>(null);
 
-  // حفظ الشركات
   useEffect(() => {
     const saved = localStorage.getItem("saved_companies");
     if (saved) setCompanies(JSON.parse(saved));
@@ -102,12 +97,10 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-black text-white px-4 py-6">
       <div className="mx-auto" style={{ maxWidth: "420px" }}>
         
-        {/* العنوان */}
         <h1 className="text-3xl font-bold text-center mb-4" style={{ color: "#FFD700" }}>
           SPX TRADING
         </h1>
 
-        {/* اللغة */}
         <div className="flex justify-end gap-2 mb-4">
           <button onClick={() => setLang("ar")} className="px-3 py-1 bg-gray-700 rounded">
             عربي
@@ -117,10 +110,8 @@ export default function DashboardPage() {
           </button>
         </div>
 
-        {/* إدخال العقد */}
         <div className="bg-[#111] border border-[#333] p-4 rounded-lg mb-6">
 
-          {/* الرمز */}
           <label className="text-[#FFD700]">الرمز</label>
           <input
             className="w-full bg-black border border-[#444] p-2 rounded mb-3"
@@ -128,7 +119,6 @@ export default function DashboardPage() {
             onChange={(e) => setSymbol(e.target.value)}
           />
 
-          {/* الشركة */}
           <label className="text-[#FFD700]">اسم الشركة</label>
           <input
             className="w-full bg-black border border-[#444] p-2 rounded mb-2"
@@ -157,7 +147,6 @@ export default function DashboardPage() {
             حفظ الشركة
           </button>
 
-          {/* مربعات التاريخ */}
           <label className="text-[#FFD700]">تاريخ الانتهاء</label>
           <div className="flex gap-2 mb-3">
             <input
@@ -180,7 +169,6 @@ export default function DashboardPage() {
             />
           </div>
 
-          {/* تقويم صغير */}
           <DatePicker
             selected={fullDate}
             onChange={(date) => setFullDate(date)}
@@ -189,7 +177,6 @@ export default function DashboardPage() {
             locale={lang}
           />
 
-          {/* تقويم فاخر كامل */}
           <div className="bg-black border border-[#444] p-3 rounded mb-4">
             <DatePicker
               inline
@@ -199,7 +186,6 @@ export default function DashboardPage() {
             />
           </div>
 
-          {/* نوع العقد */}
           <label className="text-[#FFD700]">نوع الخيار</label>
           <div className="flex gap-2 mb-3">
             <button
@@ -216,7 +202,6 @@ export default function DashboardPage() {
             </button>
           </div>
 
-          {/* الأسعار */}
           <label className="text-[#FFD700]">سعر الدخول</label>
           <input className="w-full bg-black border border-[#444] p-2 rounded mb-3"
             value={entryPrice} onChange={(e) => setEntryPrice(e.target.value)} />
@@ -229,7 +214,6 @@ export default function DashboardPage() {
           <input className="w-full bg-black border border-[#444] p-2 rounded mb-3"
             value={stopLoss} onChange={(e) => setStopLoss(e.target.value)} />
 
-          {/* ملاحظات */}
           <label className="text-[#FFD700]">ملاحظات</label>
           <textarea
             className="w-full bg-black border border-[#444] p-2 rounded mb-4"
@@ -238,7 +222,6 @@ export default function DashboardPage() {
             onChange={(e) => setNotes(e.target.value)}
           />
 
-          {/* القروب */}
           <label className="text-[#FFD700]">القروب</label>
           <select
             className="w-full bg-black border border-[#444] p-2 rounded mb-4"
@@ -250,7 +233,6 @@ export default function DashboardPage() {
             ))}
           </select>
 
-          {/* إرسال العقد */}
           <button
             className="w-full bg-yellow-600 p-2 rounded mb-2"
             onClick={sendContract}
@@ -258,13 +240,11 @@ export default function DashboardPage() {
             إرسال العقد
           </button>
 
-          {/* تشغيل البوت */}
           <button className="w-full bg-red-700 p-2 rounded mb-4">
             تشغيل / إيقاف البوت
           </button>
         </div>
 
-        {/* إرسال ملاحظة */}
         <div className="bg-[#111] border border-[#333] p-4 rounded-lg mb-6">
           <h2 className="text-[#FFD700] mb-2">إرسال ملاحظة</h2>
           <textarea
@@ -278,7 +258,6 @@ export default function DashboardPage() {
           </button>
         </div>
 
-        {/* إرسال صورة */}
         <div className="bg-[#111] border border-[#333] p-4 rounded-lg mb-6">
           <h2 className="text-[#FFD700] mb-2">إرسال صورة</h2>
           <input
@@ -291,7 +270,6 @@ export default function DashboardPage() {
           </button>
         </div>
 
-        {/* الصفقات النشطة */}
         <div className="bg-[#111] border border-[#333] p-4 rounded-lg mb-6">
           <h2 className="text-[#FFD700] mb-3">الصفقات النشطة</h2>
           {activeTrades.map((t, i) => (
@@ -303,7 +281,6 @@ export default function DashboardPage() {
           ))}
         </div>
 
-        {/* العقود المغلقة */}
         <div className="bg-[#111] border border-[#333] p-4 rounded-lg mb-6">
           <h2 className="text-[#FFD700] mb-3">العقود المغلقة</h2>
           {closedTrades.map((t, i) => (
@@ -315,7 +292,6 @@ export default function DashboardPage() {
           ))}
         </div>
 
-        {/* التقرير */}
         <div className="bg-[#111] border border-[#333] p-4 rounded-lg mb-6">
           <h2 className="text-[#FFD700] mb-3">التقرير</h2>
           <p className="text-gray-400">سيتم إضافة نظام التقرير بعد الربط مع البوت.</p>
@@ -323,7 +299,6 @@ export default function DashboardPage() {
 
       </div>
 
-      {/* معاينة العقد المنبثقة */}
       {showPreview && (
         <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center px-4">
           <div className="bg-[#111] border border-[#FFD700] p-5 rounded-lg" style={{ maxWidth: "420px", width: "100%" }}>
