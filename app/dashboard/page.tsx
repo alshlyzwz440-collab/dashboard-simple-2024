@@ -12,6 +12,7 @@ const labels = {
     botRunning: "البوت يعمل",
     botStopped: "البوت متوقف",
     symbol: "الرمز",
+    strike: "سعر التنفيذ (Strike)",
     expiration: "تاريخ الانتهاء",
     entryPrice: "سعر الدخول",
     side: "نوع العقد",
@@ -35,6 +36,7 @@ const labels = {
     botRunning: "Bot Running",
     botStopped: "Bot Stopped",
     symbol: "Symbol",
+    strike: "Strike Price",
     expiration: "Expiration Date",
     entryPrice: "Entry Price",
     side: "Contract Type",
@@ -54,14 +56,13 @@ const labels = {
   },
 };
 
-const initialCompanies = ["SPX", "TSLA", "QQQ", "AAPL", "MSFT", "NVDA", "META"];
-
 export default function Dashboard() {
   const [lang, setLang] = useState<Lang>("ar");
   const [botRunning, setBotRunning] = useState(false);
   const [side, setSide] = useState<Side>("CALL");
 
-  const [symbol, setSymbol] = useState("SPX");
+  const [symbol, setSymbol] = useState("");
+  const [strike, setStrike] = useState("");
   const [expiration, setExpiration] = useState("");
   const [entryPrice, setEntryPrice] = useState("");
   const [tp, setTp] = useState("");
@@ -70,9 +71,10 @@ export default function Dashboard() {
   const [entryNames, setEntryNames] = useState("");
 
   const [companySearch, setCompanySearch] = useState("");
-  const [companies, setCompanies] = useState<string[]>(initialCompanies);
+  const [companies, setCompanies] = useState<string[]>([]);
 
   const t = labels[lang];
+  const isRTL = lang === "ar";
 
   const filteredCompanies = companies.filter((c) =>
     c.toLowerCase().includes(companySearch.toLowerCase())
@@ -86,23 +88,13 @@ export default function Dashboard() {
     }
   };
 
-  const handleStartBot = () => {
-    setBotRunning(true);
-  };
-
-  const handleStopBot = () => {
-    setBotRunning(false);
-  };
-
-  const isRTL = lang === "ar";
-
   return (
     <div
-      className={`min-h-screen bg-[#1c1c1e] flex items-center justify-center p-6 ${
+      className={`min-h-screen bg-[#0f0f11] flex items-center justify-center p-6 ${
         isRTL ? "direction-rtl" : "direction-ltr"
       }`}
     >
-      <div className="w-full max-w-md bg-[#2a2a2d] rounded-xl shadow-xl p-6 space-y-6">
+      <div className="w-full max-w-md bg-[#1a1a1d] rounded-xl shadow-2xl p-6 space-y-6">
 
         {/* اللغة + حالة البوت */}
         <div className="flex items-center justify-between mb-2">
@@ -142,6 +134,18 @@ export default function Dashboard() {
             placeholder="SPX / TSLA / QQQ"
             value={symbol}
             onChange={(e) => setSymbol(e.target.value)}
+          />
+        </div>
+
+        {/* سترايك */}
+        <div className="field-block">
+          <label className="field-label">{t.strike}</label>
+          <input
+            type="number"
+            className="input-purple"
+            placeholder="مثال: 255.00"
+            value={strike}
+            onChange={(e) => setStrike(e.target.value)}
           />
         </div>
 
@@ -222,7 +226,7 @@ export default function Dashboard() {
           ></textarea>
         </div>
 
-        {/* الشركات المحفوظة */}
+        {/* الشركات */}
         <div className="field-block">
           <label className="field-label">{t.savedCompanies}</label>
           <div className="flex gap-2 mb-2">
@@ -243,15 +247,10 @@ export default function Dashboard() {
                 {c}
               </span>
             ))}
-            {filteredCompanies.length === 0 && (
-              <span className="text-xs text-gray-400">
-                {lang === "ar" ? "لا توجد شركات مطابقة" : "No matching companies"}
-              </span>
-            )}
           </div>
         </div>
 
-        {/* أسماء الدخول لمعاينة العقد */}
+        {/* أسماء الدخول */}
         <div className="field-block">
           <label className="field-label">{t.entryNames}</label>
           <input
@@ -268,9 +267,7 @@ export default function Dashboard() {
           <label className="field-label">{t.contractPreview}</label>
           <div className="contract-card">
             <div className="contract-header">
-              <span className="contract-title">
-                {symbol || "SPX"}
-              </span>
+              <span className="contract-title">{symbol || "SPX"}</span>
               <span
                 className={
                   side === "CALL" ? "contract-side-call" : "contract-side-put"
@@ -279,28 +276,39 @@ export default function Dashboard() {
                 {side === "CALL" ? t.call : t.put}
               </span>
             </div>
+
             <div className="contract-row">
-              <span>{lang === "ar" ? "تاريخ الانتهاء" : "Expiration"}</span>
-              <span>{expiration || (lang === "ar" ? "غير محدد" : "Not set")}</span>
+              <span>{t.strike}</span>
+              <span>{strike || "—"}</span>
             </div>
+
             <div className="contract-row">
-              <span>{lang === "ar" ? "سعر الدخول" : "Entry"}</span>
+              <span>{t.expiration}</span>
+              <span>{expiration || "—"}</span>
+            </div>
+
+            <div className="contract-row">
+              <span>{t.entryPrice}</span>
               <span>{entryPrice || "—"}</span>
             </div>
+
             <div className="contract-row">
-              <span>{lang === "ar" ? "جني الأرباح" : "TP"}</span>
+              <span>{t.tp}</span>
               <span>{tp || "—"}</span>
             </div>
+
             <div className="contract-row">
-              <span>{lang === "ar" ? "إيقاف الخسارة" : "SL"}</span>
+              <span>{t.sl}</span>
               <span>{sl || "—"}</span>
             </div>
+
             <div className="contract-row">
-              <span>{lang === "ar" ? "أسماء الدخول" : "Entries"}</span>
+              <span>{t.entryNames}</span>
               <span>{entryNames || "—"}</span>
             </div>
+
             <div className="contract-notes">
-              <span>{lang === "ar" ? "ملاحظات:" : "Notes:"}</span>
+              <span>{t.notes}:</span>
               <p>{notes || (lang === "ar" ? "لا توجد ملاحظات" : "No notes")}</p>
             </div>
           </div>
@@ -308,10 +316,10 @@ export default function Dashboard() {
 
         {/* أزرار البوت */}
         <div className="flex gap-3">
-          <button className="btn-start" onClick={handleStartBot}>
+          <button className="btn-start" onClick={() => setBotRunning(true)}>
             {t.startBot}
           </button>
-          <button className="btn-stop" onClick={handleStopBot}>
+          <button className="btn-stop" onClick={() => setBotRunning(false)}>
             {t.stopBot}
           </button>
         </div>
