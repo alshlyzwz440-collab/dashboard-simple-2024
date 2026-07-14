@@ -3,18 +3,12 @@
 // react-datepicker installed
 
 import { useState, useEffect } from "react";
-import DatePicker, { registerLocale } from "react-datepicker";
+import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-// الاستيراد الصحيح 100٪
-import { ar, enUS } from "date-fns/locale";
-
-registerLocale("ar", ar);
-registerLocale("en", enUS);
+// ❌ لا يوجد أي استيراد للغات (هذا اللي كان يخرب البناء)
 
 export default function DashboardPage() {
-  const [lang, setLang] = useState("ar");
-
   const [symbol, setSymbol] = useState("SPX");
   const [companyInput, setCompanyInput] = useState("");
   const [companies, setCompanies] = useState<string[]>([]);
@@ -31,13 +25,14 @@ export default function DashboardPage() {
   const [stopLoss, setStopLoss] = useState("");
   const [notes, setNotes] = useState("");
 
-  const [groups] = useState(["SPX TRADING", "QQQ GROUP", "TSLA GROUP"]);
-  const [selectedGroup, setSelectedGroup] = useState("SPX TRADING");
+  // ✔ القروبات فاضية – أنت تضيف بنفسك
+  const [selectedGroup, setSelectedGroup] = useState("");
 
   const [activeTrades, setActiveTrades] = useState<any[]>([]);
   const [closedTrades, setClosedTrades] = useState<any[]>([]);
-
   const [imageFile, setImageFile] = useState<File | null>(null);
+
+  const [showPreview, setShowPreview] = useState(false);
 
   useEffect(() => {
     const saved = localStorage.getItem("saved_companies");
@@ -91,8 +86,6 @@ export default function DashboardPage() {
     console.log("Image sent to:", selectedGroup);
   };
 
-  const [showPreview, setShowPreview] = useState(false);
-
   return (
     <div className="min-h-screen bg-black text-white px-4 py-6">
       <div className="mx-auto" style={{ maxWidth: "420px" }}>
@@ -100,15 +93,6 @@ export default function DashboardPage() {
         <h1 className="text-3xl font-bold text-center mb-4" style={{ color: "#FFD700" }}>
           SPX TRADING
         </h1>
-
-        <div className="flex justify-end gap-2 mb-4">
-          <button onClick={() => setLang("ar")} className="px-3 py-1 bg-gray-700 rounded">
-            عربي
-          </button>
-          <button onClick={() => setLang("en")} className="px-3 py-1 bg-gray-700 rounded">
-            English
-          </button>
-        </div>
 
         <div className="bg-[#111] border border-[#333] p-4 rounded-lg mb-6">
 
@@ -169,22 +153,13 @@ export default function DashboardPage() {
             />
           </div>
 
+          {/* ✔ تقويم واحد فقط – بدون locale */}
           <DatePicker
             selected={fullDate}
             onChange={(date) => setFullDate(date)}
             className="w-full bg-black border border-[#444] p-2 rounded mb-3"
             placeholderText="اختر من التقويم"
-            locale={lang}
           />
-
-          <div className="bg-black border border-[#444] p-3 rounded mb-4">
-            <DatePicker
-              inline
-              selected={fullDate}
-              onChange={(date) => setFullDate(date)}
-              locale={lang}
-            />
-          </div>
 
           <label className="text-[#FFD700]">نوع الخيار</label>
           <div className="flex gap-2 mb-3">
@@ -203,16 +178,25 @@ export default function DashboardPage() {
           </div>
 
           <label className="text-[#FFD700]">سعر الدخول</label>
-          <input className="w-full bg-black border border-[#444] p-2 rounded mb-3"
-            value={entryPrice} onChange={(e) => setEntryPrice(e.target.value)} />
+          <input
+            className="w-full bg-black border border-[#444] p-2 rounded mb-3"
+            value={entryPrice}
+            onChange={(e) => setEntryPrice(e.target.value)}
+          />
 
           <label className="text-[#FFD700]">هدف الربح</label>
-          <input className="w-full bg-black border border-[#444] p-2 rounded mb-3"
-            value={takeProfit} onChange={(e) => setTakeProfit(e.target.value)} />
+          <input
+            className="w-full bg-black border border-[#444] p-2 rounded mb-3"
+            value={takeProfit}
+            onChange={(e) => setTakeProfit(e.target.value)}
+          />
 
           <label className="text-[#FFD700]">إيقاف الخسارة</label>
-          <input className="w-full bg-black border border-[#444] p-2 rounded mb-3"
-            value={stopLoss} onChange={(e) => setStopLoss(e.target.value)} />
+          <input
+            className="w-full bg-black border border-[#444] p-2 rounded mb-3"
+            value={stopLoss}
+            onChange={(e) => setStopLoss(e.target.value)}
+          />
 
           <label className="text-[#FFD700]">ملاحظات</label>
           <textarea
@@ -222,16 +206,14 @@ export default function DashboardPage() {
             onChange={(e) => setNotes(e.target.value)}
           />
 
+          {/* ✔ القروب – input فقط */}
           <label className="text-[#FFD700]">القروب</label>
-          <select
-            className="w-full bg-black border border-[#444] p-2 rounded mb-4"
+          <input
+            className="w-full bg-black border border-[#444] p-2 rounded mb-3"
+            placeholder="رابط القروب"
             value={selectedGroup}
             onChange={(e) => setSelectedGroup(e.target.value)}
-          >
-            {groups.map((g) => (
-              <option key={g}>{g}</option>
-            ))}
-          </select>
+          />
 
           <button
             className="w-full bg-yellow-600 p-2 rounded mb-2"
@@ -245,6 +227,7 @@ export default function DashboardPage() {
           </button>
         </div>
 
+        {/* إرسال ملاحظة */}
         <div className="bg-[#111] border border-[#333] p-4 rounded-lg mb-6">
           <h2 className="text-[#FFD700] mb-2">إرسال ملاحظة</h2>
           <textarea
@@ -258,6 +241,7 @@ export default function DashboardPage() {
           </button>
         </div>
 
+        {/* إرسال صورة */}
         <div className="bg-[#111] border border-[#333] p-4 rounded-lg mb-6">
           <h2 className="text-[#FFD700] mb-2">إرسال صورة</h2>
           <input
@@ -270,6 +254,7 @@ export default function DashboardPage() {
           </button>
         </div>
 
+        {/* الصفقات النشطة */}
         <div className="bg-[#111] border border-[#333] p-4 rounded-lg mb-6">
           <h2 className="text-[#FFD700] mb-3">الصفقات النشطة</h2>
           {activeTrades.map((t, i) => (
@@ -281,6 +266,7 @@ export default function DashboardPage() {
           ))}
         </div>
 
+        {/* العقود المغلقة */}
         <div className="bg-[#111] border border-[#333] p-4 rounded-lg mb-6">
           <h2 className="text-[#FFD700] mb-3">العقود المغلقة</h2>
           {closedTrades.map((t, i) => (
@@ -292,6 +278,7 @@ export default function DashboardPage() {
           ))}
         </div>
 
+        {/* التقرير */}
         <div className="bg-[#111] border border-[#333] p-4 rounded-lg mb-6">
           <h2 className="text-[#FFD700] mb-3">التقرير</h2>
           <p className="text-gray-400">سيتم إضافة نظام التقرير بعد الربط مع البوت.</p>
@@ -299,6 +286,7 @@ export default function DashboardPage() {
 
       </div>
 
+      {/* معاينة العقد */}
       {showPreview && (
         <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center px-4">
           <div className="bg-[#111] border border-[#FFD700] p-5 rounded-lg" style={{ maxWidth: "420px", width: "100%" }}>
