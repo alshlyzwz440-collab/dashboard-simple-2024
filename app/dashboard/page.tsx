@@ -1,331 +1,295 @@
 "use client";
 
-import { useState } from "react";
+// react-datepicker installed
 
-type Lang = "ar" | "en";
-type Side = "CALL" | "PUT";
+import { useState, useEffect } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
-const labels = {
-  ar: {
-    title: "لوحة تحكم SPX TRADING",
-    botStatus: "حالة البوت",
-    botRunning: "البوت يعمل",
-    botStopped: "البوت متوقف",
-    symbol: "الرمز",
-    strike: "سعر التنفيذ (Strike)",
-    expiration: "تاريخ الانتهاء",
-    entryPrice: "سعر الدخول",
-    side: "نوع العقد",
-    tp: "جني الأرباح",
-    sl: "إيقاف الخسارة",
-    notes: "ملاحظات",
-    startBot: "تشغيل البوت",
-    stopBot: "إيقاف البوت",
-    savedCompanies: "الشركات المحفوظة",
-    searchCompany: "ابحث عن شركة...",
-    contractPreview: "معاينة العقد",
-    entryNames: "أسماء الدخول لمعاينة العقد",
-    call: "شراء (CALL)",
-    put: "بيع (PUT)",
-    langAr: "عربي",
-    langEn: "إنجليزي",
-  },
-  en: {
-    title: "SPX TRADING Control Panel",
-    botStatus: "Bot Status",
-    botRunning: "Bot Running",
-    botStopped: "Bot Stopped",
-    symbol: "Symbol",
-    strike: "Strike Price",
-    expiration: "Expiration Date",
-    entryPrice: "Entry Price",
-    side: "Contract Type",
-    tp: "Take Profit",
-    sl: "Stop Loss",
-    notes: "Notes",
-    startBot: "Start Bot",
-    stopBot: "Stop Bot",
-    savedCompanies: "Saved Companies",
-    searchCompany: "Search company...",
-    contractPreview: "Contract Preview",
-    entryNames: "Entry names for preview",
-    call: "CALL",
-    put: "PUT",
-    langAr: "AR",
-    langEn: "EN",
-  },
+type Lang = "en" | "ar";
+
+type Company = {
+  name: string;
 };
 
-export default function Dashboard() {
+export default function DashboardPage() {
   const [lang, setLang] = useState<Lang>("ar");
-  const [botRunning, setBotRunning] = useState(false);
-  const [side, setSide] = useState<Side>("CALL");
-
-  const [symbol, setSymbol] = useState("");
-  const [strike, setStrike] = useState("");
-  const [expiration, setExpiration] = useState("");
-  const [entryPrice, setEntryPrice] = useState("");
-  const [tp, setTp] = useState("");
-  const [sl, setSl] = useState("");
+  const [symbol, setSymbol] = useState("SPX");
+  const [strike, setStrike] = useState("255.00");
+  const [expiration, setExpiration] = useState<Date | null>(null);
+  const [contractType, setContractType] = useState<"CALL" | "PUT">("CALL");
+  const [entryPrice, setEntryPrice] = useState("7.00");
+  const [takeProfit, setTakeProfit] = useState("12.00");
+  const [stopLoss, setStopLoss] = useState("4.00");
   const [notes, setNotes] = useState("");
-  const [entryNames, setEntryNames] = useState("");
 
-  const [companySearch, setCompanySearch] = useState("");
-  const [companies, setCompanies] = useState<string[]>([]);
+  const [companyInput, setCompanyInput] = useState("");
+  const [companies, setCompanies] = useState<Company[]>([]);
+  const [filteredCompanies, setFilteredCompanies] = useState<Company[]>([]);
 
-  const t = labels[lang];
-  const isRTL = lang === "ar";
+  // تحميل الشركات من التخزين المحلي
+  useEffect(() => {
+    const stored = localStorage.getItem("saved_companies");
+    if (stored) {
+      try {
+        const parsed: Company[] = JSON.parse(stored);
+        setCompanies(parsed);
+      } catch {
+        setCompanies([]);
+      }
+    }
+  }, []);
 
-  const filteredCompanies = companies.filter((c) =>
-    c.toLowerCase().includes(companySearch.toLowerCase())
-  );
+  // فلترة الشركات حسب أول حرف
+  useEffect(() => {
+    if (!companyInput) {
+      setFilteredCompanies([]);
+      return;
+    }
+    const lower = companyInput.toLowerCase();
+    setFilteredCompanies(
+      companies.filter((c) => c.name.toLowerCase().startsWith(lower))
+    );
+  }, [companyInput, companies]);
+
+  const directionClass = lang === "ar" ? "direction-rtl" : "direction-ltr";
 
   const handleAddCompany = () => {
-    const name = companySearch.trim().toUpperCase();
-    if (!name) return;
-    if (!companies.includes(name)) {
-      setCompanies((prev) => [...prev, name]);
+    const trimmed = companyInput.trim();
+    if (!trimmed) return;
+
+    if (companies.some((c) => c.name.toLowerCase() === trimmed.toLowerCase())) {
+      setCompanyInput("");
+      return;
     }
+
+    const updated = [...companies, { name: trimmed }];
+    setCompanies(updated);
+    localStorage.setItem("saved_companies", JSON.stringify(updated));
+    setCompanyInput("");
+  };
+
+  const handleSelectCompany = (name: string) => {
+    setCompanyInput(name);
+    setFilteredCompanies([]);
+  };
+
+  const handleSubmitContract = () => {
+    console.log("Contract Submitted:", {
+      symbol,
+      strike,
+      expiration,
+      contractType,
+      entryPrice,
+      takeProfit,
+      stopLoss,
+      notes,
+    });
+  };
+
+  const handleToggleBot = () => {
+    console.log("Bot toggled");
   };
 
   return (
-    <div
-      className={`min-h-screen bg-[#0f0f11] flex items-center justify-center p-6 ${
-        isRTL ? "direction-rtl" : "direction-ltr"
-      }`}
-    >
-      <div className="w-full max-w-md bg-[#1a1a1d] rounded-xl shadow-2xl p-6 space-y-6">
+    <div className={`min-h-screen bg-[#0f0f11] text-white ${directionClass}`}>
+      <div className="max-w-xl mx-auto px-4 py-8">
 
-        {/* اللغة + حالة البوت */}
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex gap-2">
-            <button
-              className={`lang-btn ${lang === "ar" ? "lang-btn-active" : ""}`}
-              onClick={() => setLang("ar")}
-            >
-              {t.langAr}
-            </button>
-            <button
-              className={`lang-btn ${lang === "en" ? "lang-btn-active" : ""}`}
-              onClick={() => setLang("en")}
-            >
-              {t.langEn}
-            </button>
-          </div>
-          <div className="text-sm text-gray-300">
-            {t.botStatus}:{" "}
-            <span className={botRunning ? "text-green-400" : "text-red-400"}>
-              {botRunning ? t.botRunning : t.botStopped}
-            </span>
-          </div>
+        {/* عنوان القروب */}
+        <div className="mb-6 text-center">
+          <h1 className="text-3xl font-bold">SPX TRADING</h1>
+          <p className="text-sm text-gray-400 mt-1">Dashboard Control Panel</p>
         </div>
 
-        {/* العنوان */}
-        <h1 className="text-center text-xl font-bold text-white">
-          {t.title}
-        </h1>
-
-        {/* الرمز */}
-        <div className="field-block">
-          <label className="field-label">{t.symbol}</label>
-          <input
-            type="text"
-            className="input-purple"
-            placeholder="SPX / TSLA / QQQ"
-            value={symbol}
-            onChange={(e) => setSymbol(e.target.value)}
-          />
+        {/* زر اللغة */}
+        <div className="flex justify-end mb-4 gap-2">
+          <button
+            className={`lang-btn ${lang === "ar" ? "lang-btn-active" : ""}`}
+            onClick={() => setLang("ar")}
+          >
+            عربي
+          </button>
+          <button
+            className={`lang-btn ${lang === "en" ? "lang-btn-active" : ""}`}
+            onClick={() => setLang("en")}
+          >
+            English
+          </button>
         </div>
 
-        {/* سترايك */}
-        <div className="field-block">
-          <label className="field-label">{t.strike}</label>
-          <input
-            type="number"
-            className="input-purple"
-            placeholder="مثال: 255.00"
-            value={strike}
-            onChange={(e) => setStrike(e.target.value)}
-          />
-        </div>
+        {/* الكارد */}
+        <div className="contract-card">
 
-        {/* تاريخ الانتهاء */}
-        <div className="field-block">
-          <label className="field-label">{t.expiration}</label>
-          <input
-            type="date"
-            className="input-purple"
-            value={expiration}
-            onChange={(e) => setExpiration(e.target.value)}
-          />
-        </div>
-
-        {/* سعر الدخول */}
-        <div className="field-block">
-          <label className="field-label">{t.entryPrice}</label>
-          <input
-            type="number"
-            className="input-purple"
-            placeholder="7.00"
-            value={entryPrice}
-            onChange={(e) => setEntryPrice(e.target.value)}
-          />
-        </div>
-
-        {/* نوع العقد */}
-        <div className="field-block">
-          <label className="field-label">{t.side}</label>
-          <div className="flex gap-3">
-            <button
-              className={`btn-call ${side === "CALL" ? "btn-selected" : ""}`}
-              onClick={() => setSide("CALL")}
-            >
-              {t.call}
-            </button>
-            <button
-              className={`btn-put ${side === "PUT" ? "btn-selected" : ""}`}
-              onClick={() => setSide("PUT")}
-            >
-              {t.put}
-            </button>
-          </div>
-        </div>
-
-        {/* جني الأرباح */}
-        <div className="field-block">
-          <label className="field-label">{t.tp}</label>
-          <input
-            type="number"
-            className="input-purple"
-            placeholder="12.00"
-            value={tp}
-            onChange={(e) => setTp(e.target.value)}
-          />
-        </div>
-
-        {/* إيقاف الخسارة */}
-        <div className="field-block">
-          <label className="field-label">{t.sl}</label>
-          <input
-            type="number"
-            className="input-purple"
-            placeholder="4.00"
-            value={sl}
-            onChange={(e) => setSl(e.target.value)}
-          />
-        </div>
-
-        {/* ملاحظات */}
-        <div className="field-block">
-          <label className="field-label">{t.notes}</label>
-          <textarea
-            className="input-purple h-24"
-            placeholder={lang === "ar" ? "اكتب أي ملاحظات هنا" : "Write any notes here"}
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-          ></textarea>
-        </div>
-
-        {/* الشركات */}
-        <div className="field-block">
-          <label className="field-label">{t.savedCompanies}</label>
-          <div className="flex gap-2 mb-2">
+          {/* الرمز */}
+          <div className="field-block">
+            <label className="field-label">
+              {lang === "ar" ? "الرمز" : "Symbol"}
+            </label>
             <input
-              type="text"
               className="input-purple"
-              placeholder={t.searchCompany}
-              value={companySearch}
-              onChange={(e) => setCompanySearch(e.target.value)}
+              value={symbol}
+              onChange={(e) => setSymbol(e.target.value)}
+              placeholder="SPX / TSLA / QQQ"
             />
-            <button className="btn-add-company" onClick={handleAddCompany}>
-              +
+          </div>
+
+          {/* اسم الشركة */}
+          <div className="field-block">
+            <label className="field-label">
+              {lang === "ar" ? "اسم الشركة" : "Company Name"}
+            </label>
+            <input
+              className="input-purple"
+              value={companyInput}
+              onChange={(e) => setCompanyInput(e.target.value)}
+              placeholder={lang === "ar" ? "اكتب اسم الشركة" : "Type company name"}
+            />
+
+            {filteredCompanies.length > 0 && (
+              <div className="company-list">
+                {filteredCompanies.map((c) => (
+                  <button
+                    key={c.name}
+                    type="button"
+                    className="company-pill"
+                    onClick={() => handleSelectCompany(c.name)}
+                  >
+                    {c.name}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            <button
+              type="button"
+              className="btn-add-company"
+              onClick={handleAddCompany}
+            >
+              {lang === "ar" ? "حفظ الشركة" : "Save Company"}
             </button>
           </div>
-          <div className="company-list">
-            {filteredCompanies.map((c) => (
-              <span key={c} className="company-pill">
-                {c}
-              </span>
-            ))}
+
+          {/* Strike */}
+          <div className="field-block">
+            <label className="field-label">
+              {lang === "ar" ? "سعر التنفيذ (Strike)" : "Strike"}
+            </label>
+            <input
+              className="input-purple"
+              value={strike}
+              onChange={(e) => setStrike(e.target.value)}
+            />
           </div>
-        </div>
 
-        {/* أسماء الدخول */}
-        <div className="field-block">
-          <label className="field-label">{t.entryNames}</label>
-          <input
-            type="text"
-            className="input-purple"
-            placeholder={lang === "ar" ? "مثال: دخول 1، دخول 2" : "Ex: Entry 1, Entry 2"}
-            value={entryNames}
-            onChange={(e) => setEntryNames(e.target.value)}
-          />
-        </div>
+          {/* التقويم */}
+          <div className="field-block">
+            <label className="field-label">
+              {lang === "ar" ? "تاريخ الانتهاء" : "Expiration"}
+            </label>
 
-        {/* معاينة العقد */}
-        <div className="field-block">
-          <label className="field-label">{t.contractPreview}</label>
-          <div className="contract-card">
-            <div className="contract-header">
-              <span className="contract-title">{symbol || "SPX"}</span>
-              <span
-                className={
-                  side === "CALL" ? "contract-side-call" : "contract-side-put"
-                }
+            <DatePicker
+              selected={expiration}
+              onChange={(date) => setExpiration(date)}
+              className="input-purple"
+              dateFormat="yyyy-MM-dd"
+              placeholderText={lang === "ar" ? "اختر التاريخ" : "Select date"}
+              locale={lang === "ar" ? "ar" : "en"}
+            />
+          </div>
+
+          {/* نوع العقد */}
+          <div className="field-block">
+            <label className="field-label">
+              {lang === "ar" ? "نوع الخيار" : "Contract Type"}
+            </label>
+
+            <div className="flex gap-4">
+              <button
+                type="button"
+                className={`btn-call ${contractType === "CALL" ? "btn-selected" : ""}`}
+                onClick={() => setContractType("CALL")}
               >
-                {side === "CALL" ? t.call : t.put}
-              </span>
-            </div>
+                {lang === "ar" ? "CALL (شراء)" : "CALL (Buy)"}
+              </button>
 
-            <div className="contract-row">
-              <span>{t.strike}</span>
-              <span>{strike || "—"}</span>
-            </div>
-
-            <div className="contract-row">
-              <span>{t.expiration}</span>
-              <span>{expiration || "—"}</span>
-            </div>
-
-            <div className="contract-row">
-              <span>{t.entryPrice}</span>
-              <span>{entryPrice || "—"}</span>
-            </div>
-
-            <div className="contract-row">
-              <span>{t.tp}</span>
-              <span>{tp || "—"}</span>
-            </div>
-
-            <div className="contract-row">
-              <span>{t.sl}</span>
-              <span>{sl || "—"}</span>
-            </div>
-
-            <div className="contract-row">
-              <span>{t.entryNames}</span>
-              <span>{entryNames || "—"}</span>
-            </div>
-
-            <div className="contract-notes">
-              <span>{t.notes}:</span>
-              <p>{notes || (lang === "ar" ? "لا توجد ملاحظات" : "No notes")}</p>
+              <button
+                type="button"
+                className={`btn-put ${contractType === "PUT" ? "btn-selected" : ""}`}
+                onClick={() => setContractType("PUT")}
+              >
+                {lang === "ar" ? "PUT (بيع)" : "PUT (Sell)"}
+              </button>
             </div>
           </div>
-        </div>
 
-        {/* أزرار البوت */}
-        <div className="flex gap-3">
-          <button className="btn-start" onClick={() => setBotRunning(true)}>
-            {t.startBot}
-          </button>
-          <button className="btn-stop" onClick={() => setBotRunning(false)}>
-            {t.stopBot}
-          </button>
+          {/* الأسعار */}
+          <div className="field-block">
+            <label className="field-label">
+              {lang === "ar" ? "سعر الدخول" : "Entry Price"}
+            </label>
+            <input
+              className="input-purple"
+              value={entryPrice}
+              onChange={(e) => setEntryPrice(e.target.value)}
+            />
+          </div>
+
+          <div className="field-block">
+            <label className="field-label">
+              {lang === "ar" ? "هدف الربح (TP)" : "Take Profit (TP)"}
+            </label>
+            <input
+              className="input-purple"
+              value={takeProfit}
+              onChange={(e) => setTakeProfit(e.target.value)}
+            />
+          </div>
+
+          <div className="field-block">
+            <label className="field-label">
+              {lang === "ar" ? "إيقاف الخسارة (SL)" : "Stop Loss (SL)"}
+            </label>
+            <input
+              className="input-purple"
+              value={stopLoss}
+              onChange={(e) => setStopLoss(e.target.value)}
+            />
+          </div>
+
+          {/* ملاحظات */}
+          <div className="field-block">
+            <label className="field-label">
+              {lang === "ar" ? "ملاحظات" : "Notes"}
+            </label>
+            <textarea
+              className="input-purple"
+              rows={3}
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+            />
+          </div>
+
+          {/* الأزرار */}
+          <div className="flex gap-4 mt-4">
+            <button
+              type="button"
+              className="btn-start"
+              onClick={handleSubmitContract}
+            >
+              {lang === "ar" ? "إرسال العقد" : "Submit Contract"}
+            </button>
+
+            <button
+              type="button"
+              className="btn-stop"
+              onClick={handleToggleBot}
+            >
+              {lang === "ar" ? "تشغيل / إيقاف البوت" : "Start / Stop Bot"}
+            </button>
+          </div>
+
         </div>
       </div>
     </div>
   );
 }
-
-// react-datepicker installed
