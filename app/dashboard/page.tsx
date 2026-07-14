@@ -32,8 +32,8 @@ export default function DashboardPage() {
   const [notes, setNotes] = useState("");
 
   // القروبات
-  const [groups, setGroups] = useState(["SPX", "QQQ", "TSLA"]);
-  const [selectedGroup, setSelectedGroup] = useState("SPX");
+  const [groups, setGroups] = useState(["SPX TRADING", "QQQ GROUP", "TSLA GROUP"]);
+  const [selectedGroup, setSelectedGroup] = useState("SPX TRADING");
 
   // الصفقات
   const [activeTrades, setActiveTrades] = useState<any[]>([]);
@@ -83,6 +83,7 @@ export default function DashboardPage() {
       group: selectedGroup,
     };
     setActiveTrades([...activeTrades, contract]);
+    setShowPreview(true);
   };
 
   const sendNote = () => {
@@ -94,13 +95,15 @@ export default function DashboardPage() {
     console.log("Image sent to:", selectedGroup);
   };
 
+  const [showPreview, setShowPreview] = useState(false);
+
   return (
     <div className="min-h-screen bg-black text-white px-4 py-6">
       <div className="mx-auto" style={{ maxWidth: "420px" }}>
         
         {/* العنوان */}
         <h1 className="text-3xl font-bold text-center mb-4" style={{ color: "#FFD700" }}>
-          لوحة تحكم SPX TRADING
+          SPX TRADING
         </h1>
 
         {/* اللغة */}
@@ -318,6 +321,35 @@ export default function DashboardPage() {
         </div>
 
       </div>
+
+      {/* معاينة العقد المنبثقة */}
+      {showPreview && (
+        <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center px-4">
+          <div className="bg-[#111] border border-[#FFD700] p-5 rounded-lg" style={{ maxWidth: "420px", width: "100%" }}>
+            <h2 className="text-xl font-bold mb-4" style={{ color: "#FFD700" }}>
+              معاينة العقد — SPX TRADING
+            </h2>
+
+            <p>رمز: {symbol}</p>
+            <p>الشركة: {companyInput || "-"}</p>
+            <p>تاريخ: {day}-{month}-{year}</p>
+            <p>نوع: {contractType === "CALL" ? "شراء" : "بيع"}</p>
+            <p>سعر الدخول: {entryPrice}</p>
+            <p>هدف الربح: {takeProfit}</p>
+            <p>إيقاف الخسارة: {stopLoss}</p>
+            <p>ملاحظات: {notes || "-"}</p>
+            <p>القروب: {selectedGroup}</p>
+
+            <button
+              className="w-full bg-red-700 p-2 rounded mt-4"
+              onClick={() => setShowPreview(false)}
+            >
+              إغلاق
+            </button>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
