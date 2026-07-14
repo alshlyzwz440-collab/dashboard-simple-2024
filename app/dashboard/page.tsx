@@ -3,8 +3,13 @@
 // react-datepicker installed
 
 import { useState, useEffect } from "react";
-import DatePicker from "react-datepicker";
+import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import ar from "date-fns/locale/ar";
+import en from "date-fns/locale/en-US";
+
+registerLocale("ar", ar);
+registerLocale("en", en);
 
 type Lang = "en" | "ar";
 
@@ -27,7 +32,8 @@ export default function DashboardPage() {
   const [companies, setCompanies] = useState<Company[]>([]);
   const [filteredCompanies, setFilteredCompanies] = useState<Company[]>([]);
 
-  // تحميل الشركات من التخزين المحلي
+  const [showPreview, setShowPreview] = useState(false);
+
   useEffect(() => {
     const stored = localStorage.getItem("saved_companies");
     if (stored) {
@@ -40,7 +46,6 @@ export default function DashboardPage() {
     }
   }, []);
 
-  // فلترة الشركات حسب أول حرف
   useEffect(() => {
     if (!companyInput) {
       setFilteredCompanies([]);
@@ -75,16 +80,7 @@ export default function DashboardPage() {
   };
 
   const handleSubmitContract = () => {
-    console.log("Contract Submitted:", {
-      symbol,
-      strike,
-      expiration,
-      contractType,
-      entryPrice,
-      takeProfit,
-      stopLoss,
-      notes,
-    });
+    setShowPreview(true);
   };
 
   const handleToggleBot = () => {
@@ -92,13 +88,16 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className={`min-h-screen bg-[#0f0f11] text-white ${directionClass}`}>
-      <div className="max-w-xl mx-auto px-4 py-8">
-
+    <div className={`min-h-screen bg-black text-white ${directionClass}`}>
+      <div className="mx-auto px-4 py-8" style={{ maxWidth: "420px" }}>
         {/* عنوان القروب */}
         <div className="mb-6 text-center">
-          <h1 className="text-3xl font-bold">SPX TRADING</h1>
-          <p className="text-sm text-gray-400 mt-1">Dashboard Control Panel</p>
+          <h1 className="text-3xl font-bold" style={{ color: "#FFD700" }}>
+            لوحة تحكم SPX TRADING
+          </h1>
+          <p className="text-sm" style={{ color: "#c9c9c9" }}>
+            Dashboard Control Panel
+          </p>
         </div>
 
         {/* زر اللغة */}
@@ -117,12 +116,14 @@ export default function DashboardPage() {
           </button>
         </div>
 
-        {/* الكارد */}
-        <div className="contract-card">
-
+        {/* الكارد الرئيسي */}
+        <div
+          className="contract-card"
+          style={{ background: "#111", borderColor: "#333" }}
+        >
           {/* الرمز */}
           <div className="field-block">
-            <label className="field-label">
+            <label className="field-label" style={{ color: "#FFD700" }}>
               {lang === "ar" ? "الرمز" : "Symbol"}
             </label>
             <input
@@ -135,7 +136,7 @@ export default function DashboardPage() {
 
           {/* اسم الشركة */}
           <div className="field-block">
-            <label className="field-label">
+            <label className="field-label" style={{ color: "#FFD700" }}>
               {lang === "ar" ? "اسم الشركة" : "Company Name"}
             </label>
             <input
@@ -171,7 +172,7 @@ export default function DashboardPage() {
 
           {/* Strike */}
           <div className="field-block">
-            <label className="field-label">
+            <label className="field-label" style={{ color: "#FFD700" }}>
               {lang === "ar" ? "سعر التنفيذ (Strike)" : "Strike"}
             </label>
             <input
@@ -183,7 +184,7 @@ export default function DashboardPage() {
 
           {/* التقويم */}
           <div className="field-block">
-            <label className="field-label">
+            <label className="field-label" style={{ color: "#FFD700" }}>
               {lang === "ar" ? "تاريخ الانتهاء" : "Expiration"}
             </label>
 
@@ -197,34 +198,38 @@ export default function DashboardPage() {
             />
           </div>
 
-          {/* نوع العقد */}
+          {/* نوع الخيار */}
           <div className="field-block">
-            <label className="field-label">
+            <label className="field-label" style={{ color: "#FFD700" }}>
               {lang === "ar" ? "نوع الخيار" : "Contract Type"}
             </label>
 
             <div className="flex gap-4">
               <button
                 type="button"
-                className={`btn-call ${contractType === "CALL" ? "btn-selected" : ""}`}
+                className={`btn-call ${
+                  contractType === "CALL" ? "btn-selected" : ""
+                }`}
                 onClick={() => setContractType("CALL")}
               >
-                {lang === "ar" ? "CALL (شراء)" : "CALL (Buy)"}
+                {lang === "ar" ? "شراء" : "CALL"}
               </button>
 
               <button
                 type="button"
-                className={`btn-put ${contractType === "PUT" ? "btn-selected" : ""}`}
+                className={`btn-put ${
+                  contractType === "PUT" ? "btn-selected" : ""
+                }`}
                 onClick={() => setContractType("PUT")}
               >
-                {lang === "ar" ? "PUT (بيع)" : "PUT (Sell)"}
+                {lang === "ar" ? "بيع" : "PUT"}
               </button>
             </div>
           </div>
 
           {/* الأسعار */}
           <div className="field-block">
-            <label className="field-label">
+            <label className="field-label" style={{ color: "#FFD700" }}>
               {lang === "ar" ? "سعر الدخول" : "Entry Price"}
             </label>
             <input
@@ -235,7 +240,7 @@ export default function DashboardPage() {
           </div>
 
           <div className="field-block">
-            <label className="field-label">
+            <label className="field-label" style={{ color: "#FFD700" }}>
               {lang === "ar" ? "هدف الربح (TP)" : "Take Profit (TP)"}
             </label>
             <input
@@ -246,7 +251,7 @@ export default function DashboardPage() {
           </div>
 
           <div className="field-block">
-            <label className="field-label">
+            <label className="field-label" style={{ color: "#FFD700" }}>
               {lang === "ar" ? "إيقاف الخسارة (SL)" : "Stop Loss (SL)"}
             </label>
             <input
@@ -258,7 +263,7 @@ export default function DashboardPage() {
 
           {/* ملاحظات */}
           <div className="field-block">
-            <label className="field-label">
+            <label className="field-label" style={{ color: "#FFD700" }}>
               {lang === "ar" ? "ملاحظات" : "Notes"}
             </label>
             <textarea
@@ -287,9 +292,59 @@ export default function DashboardPage() {
               {lang === "ar" ? "تشغيل / إيقاف البوت" : "Start / Stop Bot"}
             </button>
           </div>
-
         </div>
       </div>
+
+      {/* معاينة العقد */}
+      {showPreview && (
+        <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center px-4">
+          <div
+            className="contract-card"
+            style={{
+              maxWidth: "420px",
+              width: "100%",
+              background: "#111",
+              borderColor: "#333",
+              padding: "20px",
+            }}
+          >
+            <h2
+              className="text-xl font-bold mb-4"
+              style={{ color: "#FFD700" }}
+            >
+              {lang === "ar" ? "معاينة العقد" : "Contract Preview"}
+            </h2>
+
+            <p>رمز: {symbol}</p>
+            <p>Strike: {strike}</p>
+            <p>
+              Expiration:{" "}
+              {expiration ? expiration.toISOString().split("T")[0] : "-"}
+            </p>
+            <p>
+              نوع العقد:{" "}
+              {contractType === "CALL"
+                ? lang === "ar"
+                  ? "شراء"
+                  : "CALL"
+                : lang === "ar"
+                ? "بيع"
+                : "PUT"}
+            </p>
+            <p>سعر الدخول: {entryPrice}</p>
+            <p>هدف الربح: {takeProfit}</p>
+            <p>إيقاف الخسارة: {stopLoss}</p>
+            <p>ملاحظات: {notes || "-"}</p>
+
+            <button
+              className="btn-stop mt-4"
+              onClick={() => setShowPreview(false)}
+            >
+              {lang === "ar" ? "إغلاق" : "Close"}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
